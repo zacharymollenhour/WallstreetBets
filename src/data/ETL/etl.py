@@ -15,16 +15,20 @@ class Etl:
     def __init__(self,df,ticker):
         self.df = df
         self.ticker = ticker
-
+        
     #Get Function
     def _get(self, params={}):
+        """
+        Extract function to extract live data and create a table to be used later in machine learning
+        """
         request_url =f"{BASE_URL}/stock/{self.ticker}/quote?token=pk_04da3e6c36334468ac1513b3adfe1531"
         response = requests.get(request_url, params=params)
         if response.status_code != 200:
-            raise Exception(f"{response.status_code}: {response.content.decode('utf-8')}")
+            return None
         self.df = response.json()
         return self.df
 
+    #Get Historical Data
     def extract_historical(self):
         """
         Extract function to extract data and create a table to be used later in machine learning
@@ -41,5 +45,4 @@ class Etl:
         return self.df
 
     def load(self):
-        print("hej")
-    
+        return self.df

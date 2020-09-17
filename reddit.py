@@ -39,9 +39,7 @@ def main():
         for a in stocks_list:
             if(a in top_level_comment.body):
                 tickercounter_dict["ticker"].append(a)
-                #print(top_level_comment.body.encode("utf-8"))
-        #print(tickercounter_dict)
-    
+                
     #Store in dataframe
     topics_data = pd.DataFrame(topics_dict)
     mentionedtickers = pd.DataFrame(tickercounter_dict)

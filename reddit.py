@@ -8,11 +8,12 @@ from yahoo_fin import stock_info as si
 import json
 import requests
 import quandl
+
 #Main
 def main():
+
     stocks_list = []
-    basepath = 'https://cloud.iexapis.com/stable/stock/'
-    basepath2 = '/quote?token=pk_04da3e6c36334468ac1513b3adfe1531'
+
 
     #Read in tickers
     with open('companylist.csv','r') as w:
@@ -21,13 +22,10 @@ def main():
         for a in stocks:
             a = a.replace('\n','')
             stocks_list.append(a)
-            url = basepath + a + basepath2
-            x = requests.get(url).json()
-            for key, value in x.items():
-                if key == 'latestPrice':
-                    print(a)
-                    print(x[key])
-    quandl.ApiConfig.api_key = '-gxDwxnv7rCk431VbY2W'
+            single_stock_earnings = get_stockdata(a)
+            print(single_stock_earnings)
+    df = pd.DataFrame(single_stock_earnings)
+    print(df)
     #Reddit API Credentials
     reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
                         client_secret='bPQUDPLovSzPtVj5t71gRV9DCGc',
@@ -58,15 +56,18 @@ def main():
     mentionedtickers = pd.DataFrame(tickercounter_dict)
 
 
-    #Total number of each ticker
-    #print(mentionedtickers['ticker'].value_counts())
-
-
 def get_date(created):
     return dt.datetime.fromtimestamp(created)
 
 
+#retrieve stock data
 def get_stockdata(ticker):
-    print(json.loads(getQuotes(ticker)))
+    basepath = 'https://cloud.iexapis.com/stable/stock/'
+    basepath2 = '/quote?token=pk_04da3e6c36334468ac1513b3adfe1531'
+    url = basepath + ticker + basepath2
+    x = requests.get(url)
+    price = x.text
+    #print(price)
+    return price
 
 main()

@@ -25,8 +25,7 @@ def main():
     subreddit = reddit.subreddit('wallstreetbets')
     submission = reddit.submission(id="it5xpg")
     submission.comment_sort = 'new'
-    tickercounter_dict = { "ticker": [],
-                            "counter":[]}
+    tickercounter_dict = { "ticker": []}
     #Dictionary to store response data
     topics_dict = { "body":[],
                     "created": []}
@@ -37,22 +36,21 @@ def main():
             continue
         topics_dict["body"].append(top_level_comment.body.encode("utf-8"))
         topics_dict["created"].append(dt.datetime.fromtimestamp(top_level_comment.created))
-
+        for a in stocks_list:
+            if(a in top_level_comment.body):
+                tickercounter_dict["ticker"].append(a)
+                #print(top_level_comment.body.encode("utf-8"))
+        #print(tickercounter_dict)
+    
     #Store in dataframe
     topics_data = pd.DataFrame(topics_dict)
-    stock_dict = Counter()
-    start = 2
+    mentionedtickers = pd.DataFrame(tickercounter_dict)
+    
 
-    #Search for tickers in reddit comments
-    for a in stocks_list:
-        #print(a)
-        if(topics_data['body'].astype(str).str.contains(a,start).any()):
-            topics_data["Indexes"] = topics_data['body'].astype(str).str.find(a,start)
-            tickercounter_dict["ticker"].append(a)
-            tickercounter_dict["counter"].append(topics_data['body'])
+    #Total number of each ticker
+    print(mentionedtickers['ticker'].value_counts())
 
-    #print(tickercounter_dict)
-    #print(stock_dict[ticker])
+  
 def get_date(created):
     return dt.datetime.fromtimestamp(created)
 

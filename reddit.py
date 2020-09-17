@@ -22,9 +22,9 @@ def main():
         for a in stocks:
             a = a.replace('\n','')
             stocks_list.append(a)
-            single_stock_earnings = get_stockdata(a)
+            
 
-    df = pd.DataFrame(single_stock_earnings)
+    
 
     #Reddit API Credentials
     reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
@@ -40,7 +40,7 @@ def main():
     #Dictionary to store response data
     topics_dict = { "body":[],
                     "created": []}
-
+    single_stock_earnings = []
     #filter through the comments
     for top_level_comment in submission.comments:
         if isinstance(top_level_comment, MoreComments):
@@ -50,7 +50,9 @@ def main():
         for a in stocks_list:
             if(a in top_level_comment.body):
                 tickercounter_dict["ticker"].append(a)
+                single_stock_earnings.append(get_stockdata(a))
 
+    print(single_stock_earnings)
     #Store in dataframe
     topics_data = pd.DataFrame(topics_dict)
     mentionedtickers = pd.DataFrame(tickercounter_dict)

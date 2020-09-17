@@ -1,25 +1,37 @@
 import praw
-import pandas as pandas
+import pandas as pd
 import datetime as dt
 from praw.models import MoreComments
 
-reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
-                     client_secret='bPQUDPLovSzPtVj5t71gRV9DCGc',
-                     user_agent='stock')
+#Main
+def main():
 
-subreddit = reddit.subreddit('wallstreetbets')
-submission = reddit.submission(id="iu3i05")
+    #Reddit API Credentials
+    reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
+                        client_secret='bPQUDPLovSzPtVj5t71gRV9DCGc',
+                        user_agent='stock')
 
-topics_dict = { "title":[], \
-                "score":[], \
-                "id":[], "url":[], \ 
-                "comms_num": [], \
-                "created": [], \
-                "body":[]}
+    #Subreddit Information
+    subreddit = reddit.subreddit('wallstreetbets')
+    submission = reddit.submission(id="it5xpg")
+    submission.comment_sort = 'new'
 
+    #Dictionary to store response data
+    topics_dict = { "body":[],
+                    "created": []}
 
-for top_level_comment in submission.comments:
-    if isinstance(top_level_comment, MoreComments):
-        continue
-    print(top_level_comment.body.encode("utf-8"))
+    #filter through the comments
+    for top_level_comment in submission.comments:
+        if isinstance(top_level_comment, MoreComments):
+            continue
+        topics_dict["body"].append(top_level_comment.body.encode("utf-8"))
+        topics_dict["created"].append(dt.datetime.fromtimestamp(top_level_comment.created))
 
+    #Store in dataframe
+    topics_data = pd.DataFrame(topics_dict)
+    
+
+def get_date(created):
+    return dt.datetime.fromtimestamp(created)
+
+main()

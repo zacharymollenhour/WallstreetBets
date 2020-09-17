@@ -23,9 +23,9 @@ def main():
             a = a.replace('\n','')
             stocks_list.append(a)
             single_stock_earnings = get_stockdata(a)
-            print(single_stock_earnings)
+
     df = pd.DataFrame(single_stock_earnings)
-    print(df)
+
     #Reddit API Credentials
     reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
                         client_secret='bPQUDPLovSzPtVj5t71gRV9DCGc',
@@ -36,6 +36,7 @@ def main():
     submission = reddit.submission(id="it5xpg")
     submission.comment_sort = 'new'
     tickercounter_dict = { "ticker": []}
+
     #Dictionary to store response data
     topics_dict = { "body":[],
                     "created": []}
@@ -47,7 +48,6 @@ def main():
         topics_dict["body"].append(top_level_comment.body.encode("utf-8"))
         topics_dict["created"].append(dt.datetime.fromtimestamp(top_level_comment.created))
         for a in stocks_list:
-            #print(quandl.get("XNYS/AAPL"))
             if(a in top_level_comment.body):
                 tickercounter_dict["ticker"].append(a)
 

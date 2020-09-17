@@ -28,6 +28,15 @@ class Etl:
         self.df = response.json()
         return self.df
 
+    #Most Active Movers
+    def _getMovers(self,params={}):
+        request_url =f"{BASE_URL}/stock/market/list/gainers?token=pk_04da3e6c36334468ac1513b3adfe1531"
+        response = requests.get(request_url, params=params)
+        if response.status_code != 200:
+            return None
+        self.df = response.json()
+        return self.df
+        
     #Get Historical Data
     def extract_historical(self):
         """

@@ -14,18 +14,6 @@ def main():
 
     stocks_list = []
 
-
-    #Read in tickers
-    with open('companylist.csv','r') as w:
-        stocks = w.readlines()
-
-        for a in stocks:
-            a = a.replace('\n','')
-            stocks_list.append(a)
-            
-
-    
-
     #Reddit API Credentials
     reddit = praw.Reddit(client_id='4Em1CElJRKZetA',
                         client_secret='bPQUDPLovSzPtVj5t71gRV9DCGc',
@@ -33,7 +21,7 @@ def main():
 
     #Subreddit Information
     subreddit = reddit.subreddit('wallstreetbets')
-    submission = reddit.submission(id="it5xpg")
+    submission = reddit.submission(id="iugmeq")
     submission.comment_sort = 'new'
     tickercounter_dict = { "ticker": []}
 
@@ -50,26 +38,18 @@ def main():
         for a in stocks_list:
             if(a in top_level_comment.body):
                 tickercounter_dict["ticker"].append(a)
-                single_stock_earnings.append(get_stockdata(a))
 
-    print(single_stock_earnings)
+
+    #print(single_stock_earnings)
     #Store in dataframe
     topics_data = pd.DataFrame(topics_dict)
     mentionedtickers = pd.DataFrame(tickercounter_dict)
-
+    return topics_data
 
 def get_date(created):
     return dt.datetime.fromtimestamp(created)
 
 
-#retrieve stock data
-def get_stockdata(ticker):
-    basepath = 'https://cloud.iexapis.com/stable/stock/'
-    basepath2 = '/quote?token=pk_04da3e6c36334468ac1513b3adfe1531'
-    url = basepath + ticker + basepath2
-    x = requests.get(url)
-    price = x.text
-    #print(price)
-    return price
+
 
 main()
